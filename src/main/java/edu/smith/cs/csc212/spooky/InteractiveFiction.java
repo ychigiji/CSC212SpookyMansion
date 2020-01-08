@@ -1,5 +1,6 @@
 package edu.smith.cs.csc212.spooky;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +24,12 @@ public class InteractiveFiction {
 		// Maybe we'll expand this to a Player object.
 		String place = game.getStart();
 
+		//initializing GameTime
+		GameTime time = new GameTime();
+		List<String> things = new ArrayList<>();
+		List<String> playerList = new ArrayList<>();
+		
+		
 		// Play the game until quitting.
 		// This is too hard to express here, so we just use an infinite loop with breaks.
 		while (true) {
@@ -31,8 +38,29 @@ public class InteractiveFiction {
 			
 			System.out.println();
 			System.out.println("... --- ...");
-			System.out.println(here.getDescription());
-
+			
+			here.printDescription(time);
+			System.out.println();
+			
+			//prints out the time in 24hr notation and adds a 0 if time<10
+			if (time.getHour() < 10) {
+				System.out.println("The time is 0" + time.getHour() + ":00 O'clock");
+			}
+			//prints out the time in 24hr notation
+			if (time.getHour() > 10 ) {
+				System.out.println("The time is " + time.getHour() + ":00 O'clock");
+			}
+			// increase the time by 1hour each time the player moves
+			time.increaseHour();
+			System.out.println();
+			
+			//Tells the user whether they have been to a place or not.
+			if(here.visited()) {
+				System.out.println("It seems you've been here before.");
+			}
+			here.visit();//
+			
+			System.out.println();
 			// Game over after print!
 			if (here.isTerminalState()) {
 				break;
@@ -57,14 +85,60 @@ public class InteractiveFiction {
 			// Do not uppercase action -- I have lowercased it.
 			String action = words.get(0).toLowerCase().trim();
 
-			if (action.equals("quit")) {
+			if (action.equals("quit") || action.equals("escape") || action.contentEquals("q")) {
 				if (input.confirm("Are you sure you want to quit?")) {
 					return place;
 				} else {
 					continue;
 				}
 			}
-
+			
+			
+			// take command
+			if (action.equals("take")) {
+				for (int i = 0; i < here.things.size(); i ++) {
+					playerList.add(here.things.get(i));
+					}
+				if (here.things.size() == 0) {
+					System.out.println("There is nothing for you to take");
+					continue;
+				}
+				
+				else {
+				System.out.println("You have " + playerList);
+				here.things.clear();
+				continue;
+				}
+				
+				}
+			
+			// prints out the users items
+			if (action.equals("stuff")){
+//				for (int i =0; i < playerList.size(); i++) {
+						if (playerList.size()== 0) {
+									System.out.println("You have nothing");
+								}else {	
+									System.out.println("You have " + playerList);
+								}	
+//							}
+							continue;
+						}
+			//Help Command
+			if (action.equals("help")) {
+				System.out.println("\"Enter a number coresponding to the place thatyou want to visit or quit or q to quit\"");
+					continue;
+				}
+			// Rested, makes time pass twice as fast, when the user types search.
+			if (action.equals("rest")) {
+				System.out.println(" rested");
+				time.increaseHour();
+					continue;
+				}
+			// search allows the user to search an exit
+			if (action.equals("search")) {
+				here.searchExit();
+				continue;
+			}
 			// From here on out, what they typed better be a number!
 			Integer exitNum = null;
 			try {
@@ -82,9 +156,15 @@ public class InteractiveFiction {
 			// Move to the room they indicated.
 			Exit destination = exits.get(exitNum);
 			place = destination.getTarget();
-		}
+			
+			
+			}
+			
+		// Tells the user how many hours they have spent playing the game.
+		System.out.println("You have spent " + time.currentHour + "hours in the GreatZimbabwe.");
 
 		return place;
+		
 	}
 
 	/**
@@ -96,13 +176,17 @@ public class InteractiveFiction {
 		TextInput input = TextInput.fromArgs(args);
 
 		// This is the game we're playing.
-		GameWorld game = new SpookyMansion();
+//		GameWorld game = new SpookyMansion();
+		GameWorld game = new GreatZimbabwe();
+	
 
 		// Actually play the game.
 		runGame(input, game);
-
+		
 		// You get here by typing "quit" or by reaching a Terminal Place.
 		System.out.println("\n\n>>> GAME OVER <<<");
+		
+		
 	}
 
 }

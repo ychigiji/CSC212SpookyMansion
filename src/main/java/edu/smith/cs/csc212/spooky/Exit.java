@@ -16,6 +16,10 @@ public class Exit {
 	 * How do we identify the Place that this is going.
 	 */
 	private String target;
+	/**
+	 * Create the boolean for secret exits.
+	 */
+	public boolean isSecret;
 	
 	/**
 	 * Create a new Exit.
@@ -25,6 +29,21 @@ public class Exit {
 	public Exit(String target, String description) {
 		this.description = description;
 		this.target = target;
+		this.isSecret = false;
+	}
+/**
+ * Some exits are secret and are not shown at first.
+ */
+	public boolean isSecret() {
+	return this.isSecret;
+	}
+	
+	/**
+	 * search for the exit and reveal it if its true
+	 */
+	public void searchExit() {
+		//Search for secret exits
+		
 	}
 	
 	/**
@@ -71,9 +90,10 @@ public class Exit {
 	 */
 	public boolean equals(Object other) {
 		if (other instanceof Exit) {
-			Exit rhs = (Exit) other;
+			Exit rhs = (Exit) other;// Casting
 			return this.target.equals(rhs.target) && this.description.equals(rhs.description); 
 		}
 		return false;
 	}
+	
 }

@@ -1,4 +1,6 @@
-# CSC212 SpookyMansion
+/**
+	 * Whether we have been here or not 
+	 **/# CSC212 SpookyMansion
 
 SpookyMansion and other Interactive Fiction to explore using and understanding Graphs.
 

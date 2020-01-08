@@ -14,6 +14,14 @@ public class Place {
 	 * This is a list of places we can get to from this place.
 	 */
 	private List<Exit> exits;
+	
+	/**
+	 * This is a list of things we can get to from this place.
+	 */
+	
+	public List<String> things;
+	
+
 	/**
 	 * This is the identifier of the place.
 	 */
@@ -28,6 +36,13 @@ public class Place {
 	private boolean terminal;
 	
 	/**
+	 * Whether we have been here or not 
+	 **/
+	private boolean visited = false;
+	
+	
+	
+	/**
 	 * Internal only constructor for Place. Use {@link #create(String, String)} or {@link #terminal(String, String)} instead.
 	 * @param id - the internal id of this place.
 	 * @param description - the user-facing description of the place.
@@ -36,6 +51,7 @@ public class Place {
 	protected Place(String id, String description, boolean terminal) {
 		this.id = id;
 		this.description = description;
+		this.things = new ArrayList<>();
 		this.exits = new ArrayList<>();
 		this.terminal = terminal;
 	}
@@ -69,9 +85,32 @@ public class Place {
 	 * @return what we show to a player about this place.
 	 */
 	public String getDescription() {
-		return this.description;
+		return this.description;	
 	}
-
+	
+	/**
+	 * The prints the time to the player.
+	 * 
+	 */
+	public void printDescription(GameTime time) {
+		System.out.println(getDescription());
+		for (int a = 0; a < this.things.size(); a++) {
+			System.out.println(this.things.get(a));
+			
+		}
+		
+	}
+	
+/**
+ * The searches the  secret exits that are in a place.
+ */
+	public void searchExit() {
+		for(Exit e :this.exits) {
+			if (e.isSecret()== true) {
+				((SecretExits)e).searchExit();
+			}
+		}
+	}
 	/**
 	 * Get a view of the exits from this Place, for navigation.
 	 * @return all the exits from this place.
@@ -79,11 +118,38 @@ public class Place {
 	public List<Exit> getVisibleExits() {
 		List<Exit> visible = new ArrayList<>();
 		for (Exit e : this.exits) {
-			visible.add(e);
+			if (e.isSecret() != true) {
+				visible.add(e);
+			}
 		}
 		return visible;
 	}
 	
+	/**
+	 * create a list of stuff keys
+	 * @return
+	 */
+	public List<String> getStuff() {
+		List<String> things = new ArrayList<>();
+		return things;
+	}
+	
+	
+	/**
+	 * boolean showing whether the player has  visited a place or not
+	 * @return
+	 */
+	public boolean visited() {
+		return this.visited;
+	}
+	
+	/**
+	 * this is where the boolean visited is assigned
+	 * @return
+	 */
+	public void visit() {
+		this.visited = true;
+	}
 	/**
 	 * This is a terminal location (good or bad).
 	 * @param id - this is the id of the place (for creating {@link Exit} objects that go here).
